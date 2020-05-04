@@ -1,5 +1,5 @@
 export interface ICalculatorController {
-  calculate: (input: string) => void;
+  calculate: (input: string) => string | number;
 }
 
 class CalculatorController implements ICalculatorController {
@@ -144,19 +144,22 @@ class CalculatorController implements ICalculatorController {
     return this.calcWholeExpression(resultArray);
   } 
 
-  calculate = (input: string) => {
+  calculate = (input: string): string | number => {
     console.log('==========================================');
     console.log();
     console.log(`Problem: ${input}`);
+    let answer;
     try {
       const parsedArray = this.parseString(input)
-      const answer = this.processParens(parsedArray)
+      answer = this.processParens(parsedArray)
 
       console.log(`Result: ${answer}`)
-    } catch (error) {
+    } catch (_error) {
+      let error: Error =_error;
       console.log(`Error: ${error.message}`);
+      answer = error.message;
     }
-    console.log();
+    return answer;
   }
 }
 
