@@ -1,5 +1,12 @@
 export interface ICalculatorController {
-  calculate: (input: string) => string | number;
+  calculate: (input: string) => ICalculateResult;
+}
+
+export interface ICalculateResult {
+  input: string;
+  output?: number;
+  error?: string;
+  steps: string[];
 }
 
 class CalculatorController implements ICalculatorController {
@@ -12,6 +19,8 @@ class CalculatorController implements ICalculatorController {
     ')': null,
     '^': null,
   };
+
+  private steps: string[] = [];
 
   private parseString = (string: string): string[] => {
     const cleanString = string.replace(/ /g, '');
@@ -136,30 +145,35 @@ class CalculatorController implements ICalculatorController {
         }
       }
       if (close === null) throw new Error('Input has too many "("')
-      console.log(resultArray.join(' '))
+      this.steps.push(resultArray.join(' '))
       resultArray.splice(open, close - open + 1, this.calcWholeExpression(resultArray.slice(open + 1, close)))
     }
     if (resultArray.lastIndexOf(')') > 0) throw new Error('Input has too many ")"')
-    console.log(resultArray.join(' '))
+    this.steps.push(resultArray.join(' '))
     return this.calcWholeExpression(resultArray);
   } 
 
-  calculate = (input: string): string | number => {
+  calculate = (input: string): ICalculateResult => {
     console.log('==========================================');
     console.log();
     console.log(`Problem: ${input}`);
-    let answer;
+    const calculateResult: ICalculateResult = {
+      input,
+      steps: this.steps
+    };
     try {
       const parsedArray = this.parseString(input)
-      answer = this.processParens(parsedArray)
+      calculateResult.output = this.processParens(parsedArray)
 
-      console.log(`Result: ${answer}`)
+      console.log(`Result: ${calculateResult.output}`)
     } catch (_error) {
       let error: Error =_error;
       console.log(`Error: ${error.message}`);
-      answer = error.message;
+      calculateResult.error = error.message;
     }
-    return answer;
+    // This is temporary. Should be making new calculations each time.
+    this.steps = [];
+    return calculateResult;
   }
 }
 

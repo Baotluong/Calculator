@@ -4,8 +4,6 @@ import './App.css';
 import Calculator from './components/Calculator';
 import CalculatorController from './controllers/CalculatorController';
 
-
-
 function App() {
   const _calculatorController = new CalculatorController();
   _calculatorController.calculate('((-2 + 10) + 20 * -2 -2) / -2 + 30 + (-14--11)');
