@@ -20,8 +20,6 @@ class CalculatorController implements ICalculatorController {
     '^': null,
   };
 
-  private steps: string[] = [];
-
   private parseString = (string: string): string[] => {
     const cleanString = string.replace(/ /g, '');
     const resultArr = []
@@ -130,8 +128,9 @@ class CalculatorController implements ICalculatorController {
     return resultArray[0];
   }
 
-  private processParens = (initialArray: string[]) => {
-    const resultArray: any[] = initialArray; 
+  private calcWholeInput = (initialArray: string[]) => {
+    const resultArray: any[] = initialArray;
+    const steps: string[] = [];
     while (true) {
       let open = resultArray.lastIndexOf('(');
       if (open < 0) break;
@@ -145,12 +144,15 @@ class CalculatorController implements ICalculatorController {
         }
       }
       if (close === null) throw new Error('Input has too many "("')
-      this.steps.push(resultArray.join(' '))
+      steps.push(resultArray.join(' '))
       resultArray.splice(open, close - open + 1, this.calcWholeExpression(resultArray.slice(open + 1, close)))
     }
     if (resultArray.lastIndexOf(')') > 0) throw new Error('Input has too many ")"')
-    this.steps.push(resultArray.join(' '))
-    return this.calcWholeExpression(resultArray);
+    steps.push(resultArray.join(' '))
+    return {
+      output: this.calcWholeExpression(resultArray),
+      steps,
+    };
   } 
 
   calculate = (input: string): ICalculateResult => {
@@ -159,11 +161,13 @@ class CalculatorController implements ICalculatorController {
     console.log(`Problem: ${input}`);
     const calculateResult: ICalculateResult = {
       input,
-      steps: this.steps
+      steps: []
     };
     try {
       const parsedArray = this.parseString(input)
-      calculateResult.output = this.processParens(parsedArray)
+      const results = this.calcWholeInput(parsedArray)
+      calculateResult.output = results.output
+      calculateResult.steps = results.steps
 
       console.log(`Result: ${calculateResult.output}`)
     } catch (_error) {
@@ -171,8 +175,7 @@ class CalculatorController implements ICalculatorController {
       console.log(`Error: ${error.message}`);
       calculateResult.error = error.message;
     }
-    // This is temporary. Should be making new calculations each time.
-    this.steps = [];
+
     return calculateResult;
   }
 }

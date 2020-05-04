@@ -1,4 +1,4 @@
-import React, { createRef } from 'react';
+import React from 'react';
 
 import { ICalculatorController, ICalculateResult } from '../controllers/CalculatorController';
 import ResultsList from './ResultsList';
