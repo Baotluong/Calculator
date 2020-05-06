@@ -60,12 +60,14 @@ class CalculatorController implements ICalculatorController {
         !isNaN(resultArr[pos + 1] as any)
       ) {
         resultArr.splice(pos, 2, '-' + resultArr[pos + 1])
-      } else if (currentValue === ')' && resultArr[pos + 1] === '(') {
-        resultArr.splice(pos + 1, 0, '*');
+      } else if (
+          currentValue === '(' &&
+          (resultArr[pos - 1] === ')' || !isNaN(resultArr[pos - 1] as any))
+      ) {
+        resultArr.splice(pos, 0, '*');
       }
       pos++;
     }
-    
     return resultArr;
   }
 
