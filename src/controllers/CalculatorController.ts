@@ -51,7 +51,12 @@ class CalculatorController implements ICalculatorController {
       const currentValue = resultArr[pos];
       if (
         currentValue === '-' &&
-        (pos === 0 || this.operations.hasOwnProperty(resultArr[pos - 1])) &&
+        (
+          pos === 0 ||
+          (
+            this.operations.hasOwnProperty(resultArr[pos - 1]) &&
+            resultArr[pos - 1] !== ')')
+          ) &&
         !isNaN(resultArr[pos + 1] as any)
       ) {
         resultArr.splice(pos, 2, '-' + resultArr[pos + 1])
@@ -68,8 +73,9 @@ class CalculatorController implements ICalculatorController {
     const { x, y, operation } = params;
     const xNum = Number.parseFloat(x);
     const yNum = Number.parseFloat(y);
-
-    if (!operation) throw new Error('Input has an arithmatic error')
+    console.log(params);
+    
+    if (!operation) throw new Error('Input has an Arithmatic error')
     let result = null;
     if (operation === '^') {
       result = Math.pow(xNum, yNum);
@@ -156,9 +162,6 @@ class CalculatorController implements ICalculatorController {
   } 
 
   calculate = (input: string): ICalculateResult => {
-    console.log('==========================================');
-    console.log();
-    console.log(`Problem: ${input}`);
     const calculateResult: ICalculateResult = {
       input,
       steps: []
@@ -168,11 +171,8 @@ class CalculatorController implements ICalculatorController {
       const results = this.calcWholeInput(parsedArray)
       calculateResult.output = results.output
       calculateResult.steps = results.steps
-
-      console.log(`Result: ${calculateResult.output}`)
     } catch (_error) {
       let error: Error =_error;
-      console.log(`Error: ${error.message}`);
       calculateResult.error = error.message;
     }
 

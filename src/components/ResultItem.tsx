@@ -10,13 +10,14 @@ const ResultItem = (props: IProps) => {
   const { calculateResult } = props;
   return (
     <div className='result-item'>
-      <p>{`Problem: ${calculateResult.input}`}</p>
-      <p>{`Steps`}</p>
+      <p className='result-bold'>Problem: {calculateResult.input}</p>
       {calculateResult.steps.map((step, index) => {
-        return <p key={index}>{step}</p>;
+        return <p className='result-normal' key={index}>{step}</p>;
       })}
-      {!!calculateResult.output && <p>{`Result: ${calculateResult.output}`}</p>}
-      {!!calculateResult.error && <p>{`Error: ${calculateResult.error}`}</p>}
+      {!!calculateResult.output &&
+        <p className='result-bold'>{`Result: ${calculateResult.output}`}</p>}
+      {!!calculateResult.error &&
+        <p className='error-message'>{`Error: ${calculateResult.error}`}</p>}
     </div>
   );
 }

@@ -2,6 +2,8 @@ import React from 'react';
 
 import { ICalculatorController, ICalculateResult } from '../controllers/CalculatorController';
 import ResultsList from './ResultsList';
+import Header from './Header';
+import InputSection from './InputSection';
 
 interface IProps {
   CalculatorController: ICalculatorController;
@@ -16,6 +18,17 @@ const initialState = {
   input: '',
   calculateResults: [],
 }
+
+const equationBank = [
+  '((-2 + 10) + 20 * -2 -2) / -2 + 30 + (-14--11)',
+  '((-3+12)+(2 * -2 -2)) / -6 + 30 + (-2--11)',
+  '(1+ 20)/3 * 2 - 16',
+  '1 + 20 / 2 * 5 - 2',
+  '(3 - 1)^2*(3)',
+  '.50 / (.5 +-1.5)^2',
+  '(0.5 + 0.5)^10+(12-6)/6',
+  '10^0.5+(10+1)-10*(0)',
+]
 
 class Calculator extends React.PureComponent<IProps, IState> {
   state: Readonly<IState> = initialState;
@@ -41,29 +54,32 @@ class Calculator extends React.PureComponent<IProps, IState> {
     }
   }
 
+  handleTryMe = () => {
+    const randomIndex = Math.floor(Math.random() * equationBank.length);
+    const input = equationBank[randomIndex];
+    this.setState(() => ({ input }));
+  }
+
   render () {
     return (
       <div className='calculator-app'>
-        <h1 className='title'>Calculator</h1>
-        { !!this.state.calculateResults[0] &&
-          !!this.state.calculateResults[0].error &&
-          <div className='error-message'>{this.state.calculateResults[0].error}</div>}
-        <div>
-          <input 
-            type='text'
-            placeholder='Enter your equation!'
-            value={this.state.input}
-            onChange={this.handleInputChange}
-            onKeyPress={this.handleKeyPress}
-            autoFocus
-            ref={this.inputRef}
+        <Header />
+        <div className='container'>
+          <InputSection
+            inputRef={this.inputRef}
+            input={this.state.input}
+            error={
+              (this.state.calculateResults[0] &&
+                this.state.calculateResults[0].error) ||
+                ''
+            }
+            handleInputChange={this.handleInputChange}
+            handleCalcSubmit={this.handleCalcSubmit}
+            handleKeyPress={this.handleKeyPress}
+            handleTryMe={this.handleTryMe}
           />
-          <button
-            onClick={this.handleCalcSubmit}
-            disabled={!this.state.input}
-          >Calculate!</button>
+          <ResultsList calculateResults={this.state.calculateResults} />
         </div>
-        {<ResultsList calculateResults={this.state.calculateResults} />}
       </div>
     );
   }

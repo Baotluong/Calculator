@@ -10,11 +10,13 @@ interface IProps {
 
 const ResultsList = (props: IProps) => {
   return (
-    <div className="results-list">
-      {props.calculateResults.map((calculateResult, index) => {
-        console.log();
-        return <ResultItem key={index} calculateResult={calculateResult} />
-      })}
+    <div className="results-section">
+      <div className="container">
+        {props.calculateResults.map((calculateResult, index) => {
+          console.log();
+          return <ResultItem key={index} calculateResult={calculateResult} />
+        })}
+      </div>
     </div>
   );
 }
