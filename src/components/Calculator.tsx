@@ -40,7 +40,16 @@ class Calculator extends React.PureComponent<IProps, IState> {
   }
 
   handleCalcSubmit = () => {
-    const calculateResult = this.props.CalculatorController.calculate(this.state.input);
+    let calculateResult: ICalculateResult;
+    if (this.state.input.toLowerCase().includes('meaning of life')) {
+      calculateResult  = {
+        input: this.state.input,
+        steps: ['Calculating answer to the Ultimate Question of Life, the Universe, and Everything'],
+        output: 42
+      }
+    } else {
+      calculateResult = this.props.CalculatorController.calculate(this.state.input);
+    }
     this.setState((prevState) => ({
       calculateResults: [calculateResult, ...prevState.calculateResults],
       input: calculateResult.error ? prevState.input : '',
