@@ -78,7 +78,8 @@ class Calculator extends React.PureComponent<IProps, IState> {
             handleKeyPress={this.handleKeyPress}
             handleTryMe={this.handleTryMe}
           />
-          <ResultsList calculateResults={this.state.calculateResults} />
+          {!!this.state.calculateResults.length &&
+            <ResultsList calculateResults={this.state.calculateResults} />}
         </div>
       </div>
     );
