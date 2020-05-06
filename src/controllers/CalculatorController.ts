@@ -69,7 +69,7 @@ class CalculatorController implements ICalculatorController {
     const xNum = Number.parseFloat(x);
     const yNum = Number.parseFloat(y);
 
-    if (!xNum || !yNum || !operation) throw new Error('Input has an arithmatic error')
+    if (!operation) throw new Error('Input has an arithmatic error')
     let result = null;
     if (operation === '^') {
       result = Math.pow(xNum, yNum);
